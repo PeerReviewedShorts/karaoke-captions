@@ -1,0 +1,5 @@
+{"name": "clean", "note": "sentence case, thin outline, cyan highlight, no plate",
+ "font": "Archivo-Variable.ttf", "axes": [750, 100], "size": 66, "uppercase": false,
+ "text": [255, 255, 255], "accent": [0, 224, 255], "stroke": [0, 0, 0], "stroke_w": 5,
+ "plate": null, "line_gap": 14, "max_width": 0.89,
+ "y": {"vertical": 0.72, "landscape": 0.9}, "max_words": 4, "pop": 0.0}

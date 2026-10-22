@@ -1,0 +1,21 @@
+__pycache__/
+*.egg-info/
+build/
+dist/
+.venv/
+._*
+.DS_Store
+# outputs when testing on clips inside the repo
+*.words.json
+*.review.txt
+*.check.json
+*.whisper.json
+*.disagree.json
+*.suggestions.json
+*.captions.mov
+*_captioned.mp4
+karaoke.toml
+*.preview.png
+.pygate/
+.pytest_cache/
+.ruff_cache/

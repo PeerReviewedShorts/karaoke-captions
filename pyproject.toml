@@ -1,0 +1,77 @@
+[build-system]
+requires = ["setuptools>=77"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "karaoke-captions"
+version = "0.1.0"
+description = "Word-by-word karaoke captions for Shorts, Reels and TikToks: one offline speech model (NVIDIA Parakeet) for text and timing, plus an agent tool with a Whisper second opinion."
+readme = "README.md"
+requires-python = ">=3.11"
+license = "MIT"
+license-files = ["LICENSE", "karaoke/fonts/*.txt"]
+authors = [{ name = "Peer Reviewed" }]
+keywords = ["captions", "subtitles", "karaoke", "shorts", "reels", "tiktok", "parakeet", "whisper", "speech-to-text", "ffmpeg", "ai-agents"]
+classifiers = [
+    "Development Status :: 4 - Beta",
+    "Environment :: Console",
+    "Intended Audience :: End Users/Desktop",
+    "Intended Audience :: Developers",
+    "Operating System :: MacOS",
+    "Operating System :: POSIX :: Linux",
+    "Operating System :: Microsoft :: Windows",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+    "Programming Language :: Python :: 3.13",
+    "Topic :: Multimedia :: Video",
+    "Topic :: Multimedia :: Sound/Audio :: Speech",
+]
+# torch >= 2.5 is what transformers 5 needs; there are no such builds for Intel Macs (see README, "Hardware").
+dependencies = ["numpy>=1.24", "Pillow>=10.1", "torch>=2.5", "transformers>=5", "librosa>=0.10"]
+
+[project.urls]
+Homepage = "https://github.com/PeerReviewedShorts/karaoke-captions"
+Issues = "https://github.com/PeerReviewedShorts/karaoke-captions/issues"
+Changelog = "https://github.com/PeerReviewedShorts/karaoke-captions/blob/main/CHANGELOG.md"
+
+[project.optional-dependencies]
+# Whisper backends are chosen per machine (karaoke-agent sysinfo/setup) and installed on purpose, not pulled in here.
+llm = ["anthropic"]
+dev = ["pytest>=8", "pytest-json-report", "ruff>=0.6", "pyright>=1.1.380", "build"]
+
+[project.scripts]
+karaoke = "karaoke.cli:main"
+karaoke-agent = "karaoke_agent.cli:main"
+
+[tool.setuptools]
+packages = ["karaoke", "karaoke.fonts", "karaoke.presets", "karaoke_agent"]
+
+[tool.setuptools.package-data]
+"karaoke_agent" = ["guide.md"]
+"karaoke.fonts" = ["*.ttf", "*.txt"]
+"karaoke.presets" = ["*.json"]
+
+[tool.ruff]
+line-length = 130
+target-version = "py311"
+extend-exclude = ["._*", ".venv", ".pygate"]
+
+[tool.ruff.lint]
+select = ["E", "F", "W", "B", "UP", "I"]
+ignore = ["E731", "B905", "UP015"]
+
+[tool.ruff.lint.isort]
+known-first-party = ["karaoke", "karaoke_agent"]
+
+[tool.pyright]
+include = ["karaoke", "karaoke_agent", "tests"]
+exclude = ["**/._*", "**/__pycache__", "build", "dist", ".venv"]
+pythonVersion = "3.11"
+typeCheckingMode = "basic"
+# the dev environment lives in .venv (see CONTRIBUTING.md), so pyright finds torch, transformers & co. there
+venvPath = "."
+venv = ".venv"
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]

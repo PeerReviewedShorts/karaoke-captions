@@ -1,0 +1,15 @@
+{
+ "note": "a starting point for your own style; every key is optional, missing keys use the defaults",
+ "font": "Anton",
+ "size": 96,
+ "uppercase": true,
+ "text": "#FFFFFF",
+ "accent": "#00E5FF",
+ "stroke": "#000000",
+ "stroke_w": 8,
+ "plate": null,
+ "max_words": 2,
+ "max_width": 0.86,
+ "y": {"vertical": 0.70, "landscape": 0.88},
+ "pop": 0.12
+}

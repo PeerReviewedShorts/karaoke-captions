@@ -1,0 +1,4 @@
+include AGENTS.md CHANGELOG.md CONTRIBUTING.md SECURITY.md
+recursive-include examples *.txt *.json
+recursive-include tests *.py
+global-exclude ._* .DS_Store

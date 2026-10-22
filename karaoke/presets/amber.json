@@ -1,0 +1,5 @@
+{"name": "amber", "note": "white words, amber highlight, dark plate (the Peer Reviewed look)",
+ "font": "Archivo-Variable.ttf", "axes": [900, 85], "size": 74, "uppercase": false,
+ "text": [255, 255, 255], "accent": [255, 196, 0], "stroke": [18, 18, 24], "stroke_w": 8,
+ "plate": [0, 0, 0, 190], "plate_radius": 18, "line_gap": 16, "max_width": 0.89,
+ "y": {"vertical": 0.72, "landscape": 0.9}, "max_words": 3, "pop": 0.0}

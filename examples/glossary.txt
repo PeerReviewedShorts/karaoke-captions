@@ -1,0 +1,5 @@
+# One term per line: names, brands, topic words the speech models may not know.
+# A note in parentheses helps whoever decides a suggestion. Lines starting with # are ignored.
+Apptronik (robot maker)
+Gemini 4 Argon (Google model)
+cornhole

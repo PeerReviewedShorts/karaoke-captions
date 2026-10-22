@@ -1,0 +1,5 @@
+{"name": "bold", "note": "condensed capitals, red highlight, heavy outline, no plate, pops in",
+ "font": "Anton-Regular.ttf", "axes": null, "size": 92, "uppercase": true,
+ "text": [255, 255, 255], "accent": [255, 59, 48], "stroke": [0, 0, 0], "stroke_w": 9,
+ "plate": null, "line_gap": 8, "max_width": 0.86,
+ "y": {"vertical": 0.72, "landscape": 0.9}, "max_words": 3, "pop": 0.12}
