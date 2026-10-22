@@ -4,7 +4,7 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "karaoke-captions"
-version = "0.1.0"
+version = "0.1.1"
 description = "Word-by-word karaoke captions for Shorts, Reels and TikToks: one offline speech model (NVIDIA Parakeet) for text and timing, plus an agent tool with a Whisper second opinion."
 readme = "README.md"
 requires-python = ">=3.11"

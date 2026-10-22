@@ -6,7 +6,8 @@ word timestamps are). Resolution is one encoder frame = 80 ms; on test sentences
 median error was 34-60 ms. Known weakness: proper names ("Aptronics" for "Apptronik's") — that is what the review file,
 `karaoke fix` and the agent tool's second opinion are for.
 
-Runs with transformers (>= 5) + torch on CPU. Long audio is cut into windows at quiet points.
+Runs with transformers (>= 5) + torch on CPU. Long audio is cut into windows of at most 60 s at quiet points: on a 6-minute
+narration, 120-s windows lost a 15-word sentence that 14-, 30- and 60-s windows all kept.
 """
 import os
 import time
@@ -19,7 +20,7 @@ from . import media
 MODEL = "nvidia/parakeet-tdt-0.6b-v3"
 LICENSE = "CC-BY-4.0"
 FRAME = 0.08                    # TDT durations count 80 ms encoder frames
-WINDOW = 120.0                  # seconds per decoding window for long audio
+WINDOW = 60.0                   # seconds per decoding window; at ~120 s Parakeet-TDT silently drops whole sentences
 _CACHE = {}
 
 
@@ -78,17 +79,17 @@ def _decode(wav, model, proc, device, t_off):
 def _run(wav, model, device):
     m, proc = _load(model, device)
     words = []
-    for a, b in _windows(wav):
+    for a, b in _windows(wav, WINDOW):
         words += _decode(wav[a:b], m, proc, device, a / media.SR)
     return words
 
 
 def _windows(wav, window=WINDOW):
-    """Cut points for long audio: the quietest 100 ms in the last 15 s of each window."""
+    """Cut points for long audio: the quietest 100 ms in the last quarter of each window."""
     n, sr = len(wav), media.SR
     cuts, start = [0], 0
     while n - start > window * sr:
-        lo, hi = start + int((window - 15) * sr), start + int(window * sr)
+        lo, hi = start + int(window * 0.75 * sr), start + int(window * sr)
         env = media.rms_envelope(wav[lo:hi])
         k = int(np.argmin(np.convolve(env, np.ones(10), "same"))) if len(env) else 0
         start = lo + k * int(sr * 0.01)

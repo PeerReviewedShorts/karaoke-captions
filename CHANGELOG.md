@@ -1,5 +1,13 @@
 # Changelog
 
+## 0.1.1 (2026-10-22)
+
+- **Fix: long audio lost whole sentences.** Parakeet-TDT decoded 2-minute windows, and on a 6-minute narration it silently
+  dropped a 15-word sentence. Windows are now at most 60 s (14-, 30- and 60-s windows all kept it).
+- `karaoke check` warns about "sound but no words" (2+ s of speech-level audio without a timed word), so lost words can
+  not slip through unnoticed again. It warns rather than fails because music without speech looks the same.
+- `karaoke-agent sysinfo` marks Whisper model files under 60 MiB as incomplete.
+
 ## 0.1.0 (2026-10-22)
 
 First public version.

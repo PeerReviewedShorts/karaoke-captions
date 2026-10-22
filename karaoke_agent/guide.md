@@ -143,6 +143,7 @@ Look at `clip.check.json`:
 | `past_end` (words timed after the clip ends) | Usually a wrong clip or a corrupt audio track. Re-run with `--retranscribe` and report if it stays. |
 | `very_long` (a word lasting more than 3 s) | Usually music or a long held sound. Report it. |
 | `early_start` (words that light up before the voice) | Snapping already ran. Report the words and their times. |
+| warning `sound but no words at …` | Words may be lost there (or it is music). Tell the user the times; if they hear speech, run `karaoke run --retranscribe` and report it if it stays. |
 
 `karaoke run --force` renders despite the failed check (it does not transcribe again; that is `--retranscribe`). Use
 it only if the user agrees.

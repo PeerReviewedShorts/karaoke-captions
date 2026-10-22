@@ -134,6 +134,34 @@ class Agent(unittest.TestCase):
             self.assertNotIn("x", back)
 
 
+class Checks(unittest.TestCase):
+    def test_missed_speech_spans(self):
+        import numpy as np
+
+        from karaoke import check
+        speech = np.ones(800, dtype=bool)                       # 8 s of sound
+        inword = np.zeros(800, dtype=bool)
+        inword[:200] = True                                     # words only in the first 2 s
+        inword[650:] = True                                     # and the last 1.5 s
+        spans = check.missed_spans(speech, inword)
+        self.assertEqual(len(spans), 1)
+        self.assertAlmostEqual(spans[0][0], 2.3, delta=0.05)
+        self.assertAlmostEqual(spans[0][1], 6.2, delta=0.05)
+        inword[300:400] = True                                  # a word in the middle: two gaps under 2 s each
+        self.assertEqual(check.missed_spans(speech, inword), [])
+
+    def test_parakeet_windows_stay_short(self):
+        import numpy as np
+
+        from karaoke import parakeet
+        self.assertLessEqual(parakeet.WINDOW, 60)
+        wav = (np.random.default_rng(1).standard_normal(16000 * 400) * 0.1).astype(np.float32)
+        cuts = parakeet._windows(wav)
+        self.assertEqual(cuts[0][0], 0)
+        self.assertEqual(cuts[-1][1], len(wav))
+        self.assertTrue(all(b - a <= 60 * 16000 for a, b in cuts))
+
+
 class AgentSetup(unittest.TestCase):
     def test_guide_ships_and_init_never_overwrites(self):
         from karaoke_agent import cli as acli
