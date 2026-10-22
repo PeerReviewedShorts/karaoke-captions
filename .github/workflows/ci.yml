@@ -8,6 +8,7 @@ jobs:
   lint:
     name: ruff + pyright
     runs-on: ubuntu-latest
+    timeout-minutes: 20
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-python@v5
@@ -24,6 +25,7 @@ jobs:
   test:
     name: tests (${{ matrix.os }}, Python ${{ matrix.python }})
     runs-on: ${{ matrix.os }}
+    timeout-minutes: 15
     strategy:
       fail-fast: false
       matrix:
@@ -36,7 +38,8 @@ jobs:
           python-version: ${{ matrix.python }}
       - name: ffmpeg (Linux)
         if: runner.os == 'Linux'
-        run: sudo apt-get update && sudo apt-get install -y ffmpeg fonts-dejavu-core
+        # without "recommended" extras: a few dozen packages instead of ~200 (Ubuntu mirrors can be slow)
+        run: sudo apt-get update && sudo apt-get install -y --no-install-recommends ffmpeg fonts-dejavu-core
       - name: ffmpeg (macOS)
         if: runner.os == 'macOS'
         run: brew install ffmpeg
@@ -59,6 +62,7 @@ jobs:
   build:
     name: build sdist + wheel
     runs-on: ubuntu-latest
+    timeout-minutes: 10
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-python@v5
