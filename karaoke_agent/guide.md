@@ -4,7 +4,8 @@
 folder as `AGENTS.md` (plus `CLAUDE.md` and a Claude Code skill), so the next agent session finds it on its own.
 
 This tool makes word-by-word karaoke captions for short videos. You drive it from the shell. Everything is plain
-files next to the clip, every command takes `--json`, and exit codes tell you what happened.
+files next to the clip, every command takes `--json`, and exit codes tell you what happened. Progress, suggestions and
+hints go to **stderr**; stdout stays empty unless you pass `--json` (then it holds the result as JSON).
 
 There are two tools:
 
@@ -32,7 +33,8 @@ karaoke-agent sysinfo --json
 ```
 
 It reports the OS, chip, RAM, GPUs (NVIDIA VRAM, Apple Metal), the torch devices, free disk space, which Whisper
-backends are installed, which Whisper models are already on disk (`whisper_models`: no download needed for those),
+backends are installed, which Whisper models are already on disk (`whisper_models`: no download needed for those; skip entries marked
+`incomplete`),
 and how each backend could be installed here. Pick the setup that fits; the table below is guidance,
 not a rule. Then record your choice and **why**:
 
@@ -78,11 +80,15 @@ karaoke run clip.mp4 [--preset amber|bold|clean]        # render + burn -> clip_
 
 Use the style options instead of editing presets: `--font` (path or installed font name), `--size`, `--color`,
 `--accent`, `--outline`, `--outline-width`, `--plate` (`#000000B0` or `none`), `--uppercase/--no-uppercase`, `--y`
-(fraction of the height or pixels), `--max-words`. Check a style before rendering the whole clip:
+(the **bottom edge** of the caption block, as a fraction of the height or in pixels), `--max-words` (`1`-`2` for a
+one-line look). Check a style before rendering the whole clip:
 
 ```
 karaoke preview clip.mp4 --at 4.2 --font "Arial Black" --accent "#00FF88"     # -> clip.preview.png, look at it
 ```
+
+**Always look at one or two preview frames before rendering**, at moments where the video shows its own text
+(titles, lower thirds, labels). If the captions sit on it, move them with `--y` and tell the user why.
 
 If the output warns that the font has no glyph for some characters, a fallback font was used; tell the user and offer
 a font that covers the language. For a style the user wants to keep, write a preset JSON
@@ -138,7 +144,8 @@ Look at `clip.check.json`:
 | `very_long` (a word lasting more than 3 s) | Usually music or a long held sound. Report it. |
 | `early_start` (words that light up before the voice) | Snapping already ran. Report the words and their times. |
 
-`karaoke run --force` renders anyway. Use it only if the user agrees.
+`karaoke run --force` renders despite the failed check (it does not transcribe again; that is `--retranscribe`). Use
+it only if the user agrees.
 
 ## Without an agent
 

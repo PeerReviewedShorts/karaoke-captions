@@ -58,7 +58,8 @@ def find_clip(p):
 # ------------------------------------------------------------------ steps
 def do_transcribe(clip, p, device="auto", force=False, snap=True):
     if os.path.exists(p["words"]) and not force:
-        log(f"words     {p['words']} (exists, use --force to redo)")
+        log(f"words     {p['words']} exists, reused (transcribe again: `karaoke run --retranscribe` "
+            f"or `karaoke transcribe --force`)")
         return wd.load(p["words"]), False
     from . import parakeet  # torch/transformers only load when needed
     log(f"parakeet  {parakeet.MODEL} on {parakeet.pick_device(device)} ...")

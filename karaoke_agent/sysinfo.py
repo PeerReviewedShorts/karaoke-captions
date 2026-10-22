@@ -107,8 +107,18 @@ def whisper_backends():
     return b
 
 
+MIN_MODEL_BYTES = 30 * 2 ** 20      # the smallest real Whisper model (tiny) is ~40-75 MB; smaller files are broken downloads
+
+
+def _entry(backend, model, path, size):
+    e = {"backend": backend, "model": model, "path": path, "size_gb": round(size / 2 ** 30, 2)}
+    if size < MIN_MODEL_BYTES:
+        e["incomplete"] = True                       # listed so the agent knows, but not usable
+    return e
+
+
 def whisper_models():
-    """Whisper models already on disk (nothing to download for these)."""
+    """Whisper models already on disk (nothing to download for these; entries with "incomplete" are broken files)."""
     from .whisper import GGML_DIRS
     found, seen = [], set()
     for d in filter(None, GGML_DIRS):
@@ -116,20 +126,17 @@ def whisper_models():
             real = os.path.realpath(f)
             if real not in seen:
                 seen.add(real)
-                found.append({"backend": "whisper.cpp", "model": os.path.basename(f)[5:-4], "path": f,
-                              "size_gb": round(os.path.getsize(f) / 2 ** 30, 2)})
+                found.append(_entry("whisper.cpp", os.path.basename(f)[5:-4], f, os.path.getsize(f)))
     hub = os.path.join(os.environ.get("HF_HOME", os.path.expanduser("~/.cache/huggingface")), "hub")
     for pattern, backend in (("models--Systran--faster-whisper-*", "faster-whisper"),
                              ("models--mobiuslabsgmbh--faster-whisper-*", "faster-whisper"),
                              ("models--mlx-community--whisper-*", "mlx-whisper")):
         for d in sorted(glob.glob(os.path.join(hub, pattern))):
             size = sum(os.path.getsize(os.path.join(r, f)) for r, _, fs in os.walk(d) for f in fs)
-            found.append({"backend": backend, "model": os.path.basename(d).split("--")[-1], "path": d,
-                          "size_gb": round(size / 2 ** 30, 2)})
+            found.append(_entry(backend, os.path.basename(d).split("--")[-1], d, size))
     whisper_dir = os.path.expanduser("~/.cache/whisper")
     for f in sorted(glob.glob(os.path.join(whisper_dir, "*.pt"))):
-        found.append({"backend": "openai-whisper", "model": os.path.basename(f)[:-3], "path": f,
-                      "size_gb": round(os.path.getsize(f) / 2 ** 30, 2)})
+        found.append(_entry("openai-whisper", os.path.basename(f)[:-3], f, os.path.getsize(f)))
     return found
 
 

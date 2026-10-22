@@ -160,7 +160,8 @@ def cmd_sysinfo(a):
         for k, v in info["whisper_installed"].items():
             log(f"whisper   {k:15} {'installed' if v['installed'] else '-'}")
         for m in info["whisper_models"]:
-            log(f"model     {m['backend']:15} {m['model']:22} {m['size_gb']} GB  {m['path']}")
+            log(f"model     {m['backend']:15} {m['model']:22} {m['size_gb']} GB  {m['path']}"
+                + ("  (INCOMPLETE, not usable)" if m.get("incomplete") else ""))
         cur = config.load(a.config).get("whisper")
         log(f"chosen    {cur['backend']} · {cur['model']} ({cur.get('reason', '')})" if cur else "chosen    nothing yet")
     return info, 0
@@ -236,6 +237,7 @@ def cmd_list(a):
     _, p = clip_paths(a.clip, a.out_dir)
     doc = sg.load(p)
     show(doc)
+    log(f"list      {len(sg.open_items(doc))} open · {len(doc['suggestions'])} in total")
     return {"open": sg.open_items(doc), "all": len(doc["suggestions"])}, 0
 
 

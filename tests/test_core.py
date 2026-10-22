@@ -160,6 +160,8 @@ class AgentSetup(unittest.TestCase):
         with tempfile.TemporaryDirectory() as d:
             with open(os.path.join(d, "ggml-small.bin"), "wb") as fh:
                 fh.write(b"0" * 1024)
+            with open(os.path.join(d, "ggml-base.bin"), "wb") as fh:
+                fh.truncate(sysinfo.MIN_MODEL_BYTES + 1)
             old = list(whisper.GGML_DIRS)
             whisper.GGML_DIRS[:] = [d]
             try:
@@ -167,7 +169,7 @@ class AgentSetup(unittest.TestCase):
                 self.assertEqual(whisper.ggml_path("small"), os.path.join(d, "ggml-small.bin"))
             finally:
                 whisper.GGML_DIRS[:] = old
-        self.assertEqual([m["model"] for m in found], ["small"])
+        self.assertEqual({m["model"]: bool(m.get("incomplete")) for m in found}, {"base": False, "small": True})
         info = sysinfo.collect()
         for k in ("os", "ram_gb", "gpus", "whisper_installed", "whisper_models", "whisper_options"):
             self.assertIn(k, info)
