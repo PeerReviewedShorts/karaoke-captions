@@ -107,7 +107,7 @@ def whisper_backends():
     return b
 
 
-MIN_MODEL_BYTES = 30 * 2 ** 20      # the smallest real Whisper model (tiny) is ~40-75 MB; smaller files are broken downloads
+MIN_MODEL_BYTES = 60 * 2 ** 20      # the smallest real Whisper model (tiny) is 72-75 MB; smaller files are broken downloads
 
 
 def _entry(backend, model, path, size):
