@@ -38,8 +38,10 @@ jobs:
           python-version: ${{ matrix.python }}
       - name: ffmpeg (Linux)
         if: runner.os == 'Linux'
-        # without "recommended" extras: a few dozen packages instead of ~200 (Ubuntu mirrors can be slow)
-        run: sudo apt-get update && sudo apt-get install -y --no-install-recommends ffmpeg fonts-dejavu-core
+        # a static build from GitHub instead of apt: the Ubuntu mirrors made this step take 7-20+ minutes
+        run: |
+          curl -sSL https://github.com/BtbN/FFmpeg-Builds/releases/download/latest/ffmpeg-n9.0-latest-linux64-gpl-9.0.tar.xz | tar xJ
+          echo "$PWD/$(ls -d ffmpeg-n9.0-*)/bin" >> "$GITHUB_PATH"
       - name: ffmpeg (macOS)
         if: runner.os == 'macOS'
         run: brew install ffmpeg
